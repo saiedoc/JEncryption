@@ -57,7 +57,7 @@ public class RSA {
     private boolean isPrime(BigInteger a){
         return a.isProbablePrime(1);
     }
-    
+
     private BigInteger findCoPrime(BigInteger f){
 
         for(BigInteger i = new BigInteger("2");f.compareTo(i)==1;i=i.add(BigInteger.ONE)){
@@ -73,38 +73,30 @@ public class RSA {
         while(!isPrime(p)){
             p = new BigInteger(bitLength,new Random());
         }
-        System.out.println("P : " + p);
         BigInteger q = new BigInteger(bitLength,new Random());
         while(!isPrime(q)){
             q = new BigInteger(bitLength,new Random());
         }
-        System.out.println("Q : " + q);
         BigInteger n = p.multiply(q);
         BigInteger phi = p.add(new BigInteger("-1")).multiply(q.add(new BigInteger("-1")));
-        System.out.println("phi : " + phi);
-        System.out.println("n : " + n);
         BigInteger e = findCoPrime(phi);
-        System.out.println("e : " + e);
         this.publicKey = new PublicKey(n,e,phi);
     }
 
     public BigInteger generatePrivateKey(PublicKey publicKey){
         for(BigInteger i = new BigInteger("2");publicKey.phi.compareTo(i)==1;i = i.add(BigInteger.ONE)){
             if((i.multiply(publicKey.e)).mod(publicKey.phi).intValue() == BigInteger.ONE.intValue()){
-                System.out.println("PK : " + i);
                 return i;
             }
         }
         return null;
     }
 
-    public BigInteger encryptMessage(String msg, int bitLength){
+    public String encryptMessage(String msg, int bitLength){
         BigInteger C = new BigInteger(msg);
-        System.out.println("Cipher : " + C);
         generatePublicKey(bitLength);
         C = C.modPow(publicKey.e,publicKey.n);
-        System.out.println("Cipher : " + C);
-        return C;
+        return C.toString();
     }
 
     public String decryptCipher(String cipher){
